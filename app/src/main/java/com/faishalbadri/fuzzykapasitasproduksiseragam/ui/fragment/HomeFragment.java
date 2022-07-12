@@ -1,6 +1,7 @@
 package com.faishalbadri.fuzzykapasitasproduksiseragam.ui.fragment;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +13,7 @@ import androidx.fragment.app.Fragment;
 
 import com.faishalbadri.fuzzykapasitasproduksiseragam.R;
 import com.faishalbadri.fuzzykapasitasproduksiseragam.util.SessionManager;
+import com.faishalbadri.fuzzykapasitasproduksiseragam.util.Util;
 import com.rengwuxian.materialedittext.MaterialEditText;
 
 import java.util.HashMap;
@@ -191,6 +193,8 @@ public class HomeFragment extends Fragment {
         Double xy = x / y;
 
         hasil = xy.intValue();
+
+        hasil = Util.data(hasil, Integer.parseInt(persediaanVal), Integer.parseInt(permintaanVal), Integer.parseInt(hashMap.get(SessionManager.key_produksi_min)), Integer.parseInt(hashMap.get(SessionManager.key_produksi_max)));
 
         txtHasilValue.setText(hasil + "");
     }
