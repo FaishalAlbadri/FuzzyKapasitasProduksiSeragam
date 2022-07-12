@@ -13,7 +13,6 @@ import androidx.fragment.app.Fragment;
 
 import com.faishalbadri.fuzzykapasitasproduksiseragam.R;
 import com.faishalbadri.fuzzykapasitasproduksiseragam.util.SessionManager;
-import com.faishalbadri.fuzzykapasitasproduksiseragam.util.Util;
 import com.rengwuxian.materialedittext.MaterialEditText;
 
 import java.util.HashMap;
@@ -97,14 +96,28 @@ public class HomeFragment extends Fragment {
         double min = Double.parseDouble(hashMap.get(SessionManager.key_persediaan_min));
         double max = Double.parseDouble(hashMap.get(SessionManager.key_persediaan_max));
 
-        if (persediaanValInt <= min) {
+        double crisp = (max - min) / 2;
+
+        double sedikitMax = min + crisp;
+        double sedikitCenter = min - (crisp / 3);
+
+        double banyakMin = min;
+        double banyakCenter = sedikitMax + (crisp / 2);
+
+
+        if (persediaanValInt < sedikitCenter) {
             kurvaPersediaanSeragamRendah = Double.valueOf(1);
-            kurvaPersediaanSeragamTinggi = Double.valueOf(0);
-        } else if (persediaanValInt >= min && persediaanValInt <= max) {
-            kurvaPersediaanSeragamRendah = round((max - persediaanValInt) / (max - min), 2);
-            kurvaPersediaanSeragamTinggi = round((persediaanValInt - min) / (max - min), 2);
-        } else if (persediaanValInt >= max) {
+        } else if (persediaanValInt >= sedikitCenter && persediaanValInt <= sedikitMax) {
+            kurvaPersediaanSeragamRendah = round((sedikitMax - persediaanValInt) / (sedikitMax - sedikitCenter), 2);
+        } else if (persediaanValInt > sedikitMax) {
             kurvaPersediaanSeragamRendah = Double.valueOf(0);
+        }
+
+        if (persediaanValInt < banyakMin) {
+            kurvaPersediaanSeragamTinggi = Double.valueOf(0);
+        } else if (persediaanValInt >= banyakMin && persediaanValInt <= banyakCenter) {
+            kurvaPersediaanSeragamTinggi = round((persediaanValInt - banyakMin) / (banyakCenter - banyakMin), 2);
+        } else if (persediaanValInt > banyakCenter) {
             kurvaPersediaanSeragamTinggi = Double.valueOf(1);
         }
 
@@ -119,14 +132,28 @@ public class HomeFragment extends Fragment {
         double min = Double.parseDouble(hashMap.get(SessionManager.key_permintaan_min));
         double max = Double.parseDouble(hashMap.get(SessionManager.key_permintaan_max));
 
-        if (permintaanValInt <= min) {
+        double crisp = (max - min) / 2;
+
+        double sedikitMax = min + crisp;
+        double sedikitCenter = min - (crisp / 3);
+
+        double banyakMin = min;
+        double banyakCenter = sedikitMax + (crisp / 2);
+
+
+        if (permintaanValInt < sedikitCenter) {
             kurvaPermintaanSeragamRendah = Double.valueOf(1);
-            kurvaPermintaanSeragamTinggi = Double.valueOf(0);
-        } else if (permintaanValInt >= min && permintaanValInt <= max) {
-            kurvaPermintaanSeragamRendah = round((max - permintaanValInt) / (max - min), 2);
-            kurvaPermintaanSeragamTinggi = round((permintaanValInt - min) / (max - min), 2);
-        } else if (permintaanValInt >= max) {
+        } else if (permintaanValInt >= sedikitCenter && permintaanValInt <= sedikitMax) {
+            kurvaPermintaanSeragamRendah = round((sedikitMax - permintaanValInt) / (sedikitMax - sedikitCenter), 2);
+        } else if (permintaanValInt > sedikitMax) {
             kurvaPermintaanSeragamRendah = Double.valueOf(0);
+        }
+
+        if (permintaanValInt < banyakMin) {
+            kurvaPermintaanSeragamTinggi = Double.valueOf(0);
+        } else if (permintaanValInt >= banyakMin && permintaanValInt <= banyakCenter) {
+            kurvaPermintaanSeragamTinggi = round((permintaanValInt - banyakMin) / (banyakCenter - banyakMin), 2);
+        } else if (permintaanValInt > banyakCenter) {
             kurvaPermintaanSeragamTinggi = Double.valueOf(1);
         }
 
@@ -140,8 +167,16 @@ public class HomeFragment extends Fragment {
         double min = Double.parseDouble(hashMap.get(SessionManager.key_produksi_min));
         double max = Double.parseDouble(hashMap.get(SessionManager.key_produksi_max));
 
+        double crisp = (max - min) / 2;
+
+        double sedikitMax = min + crisp;
+
+        double banyakMin = min;
+        double banyakCenter = sedikitMax + (crisp / 2);
+
         a1 = Math.min(kurvaPersediaanSeragamTinggi, kurvaPermintaanSeragamTinggi);
-        z1 = round(max - (a1 * (max - min)), 2);
+
+        z1 = round((((banyakCenter - banyakMin) * a1) + banyakMin), 2);
 
         txtARules1Value.setText(a1 + "");
         txtZRules1Value.setText(z1 + "");
@@ -153,8 +188,15 @@ public class HomeFragment extends Fragment {
         double min = Double.parseDouble(hashMap.get(SessionManager.key_produksi_min));
         double max = Double.parseDouble(hashMap.get(SessionManager.key_produksi_max));
 
+        double crisp = (max - min) / 2;
+
+        double sedikitMax = min + crisp;
+        double sedikitCenter = min - (crisp / 3);
+
         a2 = Math.min(kurvaPersediaanSeragamTinggi, kurvaPermintaanSeragamRendah);
-        z2 = round(max - (a2 * (max - min)), 2);
+
+        z2 = round((sedikitMax - ((sedikitMax - sedikitCenter) * a2)), 2);
+
 
         txtARules2Value.setText(a2 + "");
         txtZRules2Value.setText(z2 + "");
@@ -165,9 +207,18 @@ public class HomeFragment extends Fragment {
     private void rules3() {
         double min = Double.parseDouble(hashMap.get(SessionManager.key_produksi_min));
         double max = Double.parseDouble(hashMap.get(SessionManager.key_produksi_max));
+        double crisp = (max - min) / 2;
+
+        double sedikitMax = min + crisp;
+
+        double banyakMin = min;
+        double banyakCenter = sedikitMax + (crisp / 2);
+
 
         a3 = Math.min(kurvaPersediaanSeragamRendah, kurvaPermintaanSeragamTinggi);
-        z3 = round(max - (a3 * (max - min)), 2);
+
+        z3 = round((((banyakCenter - banyakMin) * a3) + banyakMin), 2);
+
 
         txtARules3Value.setText(a3 + "");
         txtZRules3Value.setText(z3 + "");
@@ -177,9 +228,14 @@ public class HomeFragment extends Fragment {
     private void rules4() {
         double min = Double.parseDouble(hashMap.get(SessionManager.key_produksi_min));
         double max = Double.parseDouble(hashMap.get(SessionManager.key_produksi_max));
+        double crisp = (max - min) / 2;
+
+        double sedikitMax = min + crisp;
+        double sedikitCenter = min - (crisp / 3);
 
         a4 = Math.min(kurvaPersediaanSeragamRendah, kurvaPermintaanSeragamRendah);
-        z4 = round(max - (a4 * (max - min)), 2);
+
+        z4 = round((sedikitMax - ((sedikitMax - sedikitCenter) * a4)), 2);
 
         txtARules4Value.setText(a4 + "");
         txtZRules4Value.setText(z4 + "");
@@ -191,10 +247,18 @@ public class HomeFragment extends Fragment {
         Double x = ((a1 * z1) + (a2 * z2) + (a3 * z3) + (a4 * z4));
         Double y = a1 + a2 + a3 + a4;
         Double xy = x / y;
+        double min = Double.parseDouble(hashMap.get(SessionManager.key_produksi_min));
+        Double max = Double.parseDouble(hashMap.get(SessionManager.key_produksi_max));
+        double crisp = (max - min) / 2;
+
+        double sedikitMax = min + crisp;
+        double banyakCenter = sedikitMax + (crisp / 2);
 
         hasil = xy.intValue();
 
-        hasil = Util.data(hasil, Integer.parseInt(persediaanVal), Integer.parseInt(permintaanVal), Integer.parseInt(hashMap.get(SessionManager.key_produksi_min)), Integer.parseInt(hashMap.get(SessionManager.key_produksi_max)));
+        if (hasil == banyakCenter) {
+            hasil = max.intValue();
+        }
 
         txtHasilValue.setText(hasil + "");
     }
